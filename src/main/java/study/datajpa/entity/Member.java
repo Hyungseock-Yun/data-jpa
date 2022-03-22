@@ -11,6 +11,7 @@ import static javax.persistence.FetchType.*;
 @Entity
 @Getter @Setter
 @ToString(of = {"id","username","age","team"})
+@NamedEntityGraph(name = "Member.all", attributeNodes = @NamedAttributeNode("team"))
 public class Member {
 
   @Id @GeneratedValue
