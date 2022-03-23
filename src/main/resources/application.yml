@@ -14,6 +14,13 @@ spring:
         format_sql: true
         default_batch_fetch_size : 100
 
+  data:
+    web:
+      pageable:
+        default-page-size: 10   # 기본 페이징 사이즈. default: 20
+        max-page-size: 2000
+#        one-indexed-parameters: true   # pageable 데이터가 맞지 않는 한계가 있다.
+
 logging:
   level:
     org.hibernate.SQL: debug   # logger를 통해서 출력. 운영환경에서는 logger를 통해 찍어야함.
