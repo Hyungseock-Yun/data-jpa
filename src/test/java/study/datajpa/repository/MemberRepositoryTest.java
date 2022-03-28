@@ -278,4 +278,55 @@ class MemberRepositoryTest {
 
     assertThat(result.get(0).getUsername()).isEqualTo("m1");
   }
+
+  @Test
+  public void projections() {
+    Team teamA = new Team("teamA");
+    em.persist(teamA);
+
+    Member m1 = new Member("m1", 0, teamA);
+    Member m2 = new Member("m2", 0, teamA);
+    em.persist(m1);
+    em.persist(m2);
+
+    em.flush();
+    em.clear();
+
+//    List<UsernameOnlyDto> result = memberRepository.findProjectionByUsername("m1");
+//    List<UsernameOnlyDto> result = memberRepository.findProjection("m1", UsernameOnlyDto.class);
+//    for (UsernameOnlyDto usernameOnly : result) {
+//      System.out.println("usernameOnly = " + usernameOnly);
+//    }
+    List<NestedClosedProjections> result = memberRepository.findProjectionByUsername("m1", NestedClosedProjections.class);
+    for (NestedClosedProjections nestedClosedProjections : result) {
+      String username = nestedClosedProjections.getUsername();
+      System.out.println("username = " + username);
+      String teamName = nestedClosedProjections.getTeam().getName();
+      System.out.println("teamName = " + teamName);
+    }
+  }
+
+  @Test
+  public void nativeQuery() {
+    Team teamA = new Team("teamA");
+    em.persist(teamA);
+
+    Member m1 = new Member("m1", 0, teamA);
+    Member m2 = new Member("m2", 0, teamA);
+    em.persist(m1);
+    em.persist(m2);
+
+    em.flush();
+    em.clear();
+
+//    Member result = memberRepository.findByNativeQuery("m1");
+//    System.out.println("result = " + result);
+
+    Page<MemberProjection> result = memberRepository.findByNativeProjection(PageRequest.of(0, 10));
+    List<MemberProjection> content = result.getContent();
+    for (MemberProjection memberProjection : content) {
+      System.out.println("memberProjection = " + memberProjection.getUsername());
+      System.out.println("memberProjection = " + memberProjection.getTeamName());
+    }
+  }
 }
